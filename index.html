@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Images To Server</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!--Importación de VUE 3 Mediante CDN -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <!--Importar AXIOS mediante CDN-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="sendFile" class="w-8/12 bg-gray-100 mx-auto shadow-md rounded-md p-2 mt-8">
+        <h1 class="p-2 font-bold text-2xl">{{title}}</h1>
+        <!--action="uploadImage.php" method="post" enctype="multipart/form-data"-->
+        <form  class="w-10/12 flex flex-wrap">
+
+            
+            <input type="file" name="file" id="file" class="w-full p-2" @change="FileSelected">
+
+            <input type="button" value="Upload" class="bg-blue-300 hover:bg-blue-400 hover:font-bold p-2 text-white rounded-md cursor-pointer" @click="SendFile">
+
+        </form>
+    </div>
+
+
+    <!-- Creación de Script para VUE3-->
+
+    <script>
+        Vue.createApp({
+            data(){
+                return{
+                   title: "Carga de Archivos a Servidor con PHP - VUE - AXIOS",
+                   file: null,
+                   url: "http://localhost:8000"
+                }
+            },
+            methods : {
+                FileSelected(e){
+                    this.file = e.target.files[0],
+                    console.log(this.file)
+                },
+                SendFile(){
+
+                    var fd = new FormData();
+                    fd.append("file", this.file, this.file.name)
+                    console.log(fd.getAll("file"));
+                    
+                    axios
+                    .create({
+                        baseURL: "http://localhost:8000" //this.url,
+                        
+                    })
+                    .post("/uploadImage.php", fd)
+                    .then(response => {
+                        console.log(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error.data)
+                    })
+                }
+            }
+        }).mount("#sendFile");
+    </script>
+
+</body>
+</html>
